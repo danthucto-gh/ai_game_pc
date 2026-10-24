@@ -1,0 +1,27 @@
+
+
+
+1) GPU
+1.1) Sticker
+GV-N3090GAMING OC-24GD          rev. 1.0
+SN214441046047
+4 719331 307547
+
+1.2) Explanation of the Sticker
+
+1.2.1) Part Number (GV-N3090GAMING OC-24GD):
+- GV: Gigabyte Video (graphics card division).
+- N3090: NVIDIA GeForce RTX 3090 (GA102-300-A1 die).   
+- GAMING OC: Gaming Series, factory overclocked (1755 MHz boost clock vs. 1695 MHz reference).   
+- 24GD: 24GB of GDDR6X VRAM across a 384-bit bus (936.2 GB/s bandwidth).   
+1.2.2) Revision (rev. 1.0):
+Indicates the first PCB and WINDFORCE 3X cooler revision. Because NVIDIA never introduced a Lite Hash Rate (LHR) limiter on the RTX 3090, Gigabyte kept this card on rev. 1.0 throughout its entire production run.   
+1.2.3) Serial Number (SN214441046047):
+- 21: Manufactured in the year 2021.
+- 44: Manufactured in Week 44 of 2021 (November 1–7, 2021). Being a late-2021 build is a strong plus: by this batch, Gigabyte had already resolved the recessed 8-pin power connector pin issue that affected early autumn-2020 batches.
+- 41046047: Factory line and sequential unit ID.
+1.2.3) EAN-13 Barcode (4 719331 307547):
+- 471: GS1 country prefix for Taiwan.
+- 9331: Manufacturer code registered to Giga-Byte Technology Co., Ltd.
+- 30754: Specific product identifier for the GV-N3090GAMING OC-24GD.   
+- 7: Modulo-10 check digit, confirming your barcode transcription is mathematically flawless.

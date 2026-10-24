@@ -38,14 +38,18 @@ We have paid €1260 for a RTX 3090 24GB (price keeps rising every week).
 And we are now looking for a desktop PC. 
 
 3) The hardware roadmap: 
-3.1. Roadmap towards local AI rig
-We are eyeing any of the following : 
-3.1.1. dual RTX 3090 24 GB (1250€ each)
-3.1.2. quardruple Tesla v100 32GB (now 70€ each)
-3.1.3. CMP 170hx 8GB Hynix unlocked to 64GB (now 2600€) 
+3.1) What we already have:
+Look at the file src/Existing_Hardware.txt
 
-3.2. The roadmap towards a gaming PC
+3.2) Roadmap towards local AI rig
+We are eyeing any of the following : 
+3.2.1. dual RTX 3090 24 GB (1250€ each)
+3.2.2. quardruple Tesla v100 32GB (now 70€ each)
+3.2.3. CMP 170hx 8GB Hynix unlocked to 64GB (now 2600€) 
+
+3.3) The roadmap towards a gaming PC
 The son starts to like a gaming desktop for simple games (now: Geometry Dash, Minecraft), leading to bigger games later)
+But I assume that any AI rig which can run Qwen 3.8 Flash Next at at least 20 tokens/sec will be able to run simple games smoothly.
 
 4) The education roadmap: 
 We would like the son to have (1) a knowledge of hardware and (2) the affinity to AI stuffs, (3) the understanding that the pleasure need to work hard to earn.
