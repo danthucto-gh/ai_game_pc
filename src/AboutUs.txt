@@ -44,7 +44,7 @@ Look at the file src/Existing_Hardware.txt
 3.2) Roadmap towards local AI rig
 We are eyeing any of the following : 
 3.2.1. dual RTX 3090 24 GB (1250€ each)
-3.2.2. quardruple Tesla v100 32GB (now 70€ each)
+3.2.2. quardruple Tesla v100 32GB (now 700€ each)
 3.2.3. CMP 170hx 8GB Hynix unlocked to 64GB (now 2600€) 
 
 3.3) The roadmap towards a gaming PC
