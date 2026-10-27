@@ -1,0 +1,281 @@
+cuong@aiserver:~/Strata$ cd ~/Strata
+./setup.sh --setup
+Strata - Qwen3.8-Flash-Next on a normal PC (a GPU + system RAM + CPU)
+
+=== Step 1: checking your PC ===
+  [ok] GPU: NVIDIA GeForce RTX 3090, 24.0 GB VRAM, compute capability 8.6, driver 595.99.02
+  [ok] RAM: 63 GB
+  [ok] CPU: Intel(R) Xeon(R) CPU E5-2699 v4 @ 2.20GHz (AVX2)
+  [ok] PCIe: 3.0 x16 (the card supports 4.0, the board 3.0)
+
+=== Step 2: your choices ===
+  1) Qwen3.8-Flash-Next   Qwen; GSQ-RCO quants by ISTA-DASLab - the original model
+  2) Swift 1.5            UkisAI's fine-tune of Qwen3.8-Flash-Next - thinks much shorter (-63% thinking tokens, 1.8x sooner answers by its authors' numbers)
+  3) Qwen3.8-Flash-Next Coder ISTA-DASLab's coding version - half the experts (code, tools, images kept): needs ~32 GB of RAM, faster; weaker outside coding
+  4) Qwen3.8-Flash-Next (Unsloth) Unsloth's 4- to 8-bit quantizations - UD-IQ4_XS, UD-Q4_K_XL, UD-Q5_K_XL, UD-Q6_K_XL or Q8_0 (94 to 188 GB downloads): every expert in RAM from ~80 GB (UD-IQ4_XS) to ~136 GB (Q8_0) of RAM, else part of them read from the SSD
+  5) Qwen3.8-Flash-Next (Gyro) Gyro quantizations by agentionai - Gyro-S (27.6 GB of memory) and Gyro-M (35 GB): the smallest sizes, for PCs with little memory; 58 and 92 GB downloads (the files include the n-gram table)   [for PCs with little memory: VRAM + RAM together 27.6 GB (Gyro-S) or 35 GB (Gyro-M)]
+  6) Qwen3.8-Flash-Next (NVFP4) NVFP4 packs by sergqwer (strata-nvfp4) - 4-bit NVFP4 experts, NVIDIA cards; a 128 GB download, ~80 GB of RAM to keep every expert in RAM   [runs, but UD-IQ4_XS is faster on this card; 128 GB download, ~80 GB of RAM keeps every expert in RAM; this CPU has no AVX-512, so NVFP4's CPU rows run on AVX2: about as fast when memory-bound, up to ~12% slower on 4-token windows]
+  7) Qwen3.6-35B-A3B      Qwen; GGUFs with the MTP layer by Unsloth - 35B mixture of experts with 3B active (256 experts, top-8): a smaller cousin of Qwen3.8-Flash-Next with the same tokenizer   [new]
+  8) DeepSeek-V4.1-Flash  DeepSeek; the 2-bit GGUFs by IST-DAS, UD-Q8_K_XL by Unsloth - a big model that runs on a PC with a 12 GB card and 64 GB of RAM (the two official 2-bit versions: 257 or 274 GB of disk, about 5-7 tokens a second) or, in Unsloth's 508 GB version, on several graphics cards   [new]
+Which model? [1]: 5
+  [ok] model: Qwen3.8-Flash-Next (Gyro)
+  Its license: Qwen Community License 1.0 (Qwen3.8-Flash-Next's; the Gyro files are agentionai's quantization): https://huggingface.co/agentionai/Qwen3.8-Flash-Next-Gyro-GGUF
+
+  1) Gyro-S the smallest option, for PCs with little memory (27.6 GB of VRAM + RAM together); lower quality than the 2-3-bit sizes, and the 2-bit Q2_0 decodes faster; download 58.5 GB (the n-gram table is in the file), memory 27.6 GB
+  2) Gyro-M about IQ3_XXS quality with about 20% less GPU memory (35 GB of VRAM + RAM together); decodes about 16-21% slower than Q2_0 on 12 GB cards; download 92.0 GB (the n-gram table is in the file), memory 35.0 GB
+Which size? [2]:
+  [ok] size: Gyro-M
+
+  Context length = how much text the model can see at once (your chat, files, tool output).
+  Longer needs more VRAM for it, so fewer experts fit on the GPU:
+  1) 8K tokens
+  2) 32K tokens
+  3) 64K tokens
+  4) 128K tokens   (recommended for your GPU)
+  5) 200K tokens
+  6) 256K tokens
+  7) 384K tokens   (experimental: setup adds rope scaling)
+  8) 512K tokens   (experimental: setup adds rope scaling)
+Context? [4]: 4
+  [ok] context: 131072 tokens
+
+  KV cache precision (the model's memory of the conversation):
+  1) 8-bit   (recommended: what every published number was measured with)
+  2) 4-bit   half the memory (about 4% faster at 128K), but measurably less precise on long
+             documents; long-context lookups (needle tests) still pass
+KV cache? [1]: 1
+  [ok] KV cache: 8-bit
+
+  Images: the model can also read pictures (screenshots, photos, scanned pages). This adds a 0.9 GB
+  download and keeps ~1.4 GB of VRAM free for the image encoder, so text is a few % slower.
+Do you want images? [y]: y
+  [ok] images: on
+
+=== Step 3: Python packages ===
+  [ok] numpy, jinja2, regex, pyyaml, tqdm, requests, pillow, psutil, textual (the screens) already installed
+
+=== Step 4: the Strata engine ===
+  [ok] llama.cpp 3cf0325 (gguf-py, ggml, mtmd)
+  [ok] ready-made engine already installed
+  [ok] NVIDIA CUDA libraries (cuBLAS, CUDA runtime; ~0.4 GB) already installed
+  [ok] engine: /home/cuong/Strata/engine/strata
+
+=== Step 5: downloading Qwen3.8-Flash-Next (Gyro) Gyro-M ===
+  The model files go in /home/cuong/Strata-data/models/gyro-Gyro-M
+  Files you already have: put them here with their original names (Qwen3.8-Flash-Next-Gyro-M-TQ2_0.gguf), or use --gguf-dir <their folder>.
+  Qwen3.8-Flash-Next-Gyro-M-TQ2_0.gguf:  91.97 / 91.97 GB (100%)
+  checking Qwen3.8-Flash-Next-Gyro-M-TQ2_0.gguf (SHA-256, 92.0 GB) ...
+  checking Qwen3.8-Flash-Next-Gyro-M-TQ2_0.gguf:  91.44 / 91.97 GB (99%)
+  [ok] Qwen3.8-Flash-Next-Gyro-M-TQ2_0.gguf downloaded
+  [ok] model files present
+  [ok] vision encoder already downloaded
+  [ok] vision encoder: /home/cuong/Strata-data/models/mmproj-Qwen3.8-Flash-Next-BF16.gguf
+
+=== Step 6: preparing the model for Strata ===
+  > /home/cuong/Strata/.venv/bin/python /home/cuong/Strata/tools/iq_pack.py --gguf /home/cuong/Strata-data/models/gyro-Gyro-M/Qwen3.8-Flash-Next-Gyro-M-TQ2_0.gguf --out /home/cuong/Strata-data/packs/gyro-gyro-m --compat-bf16
+prism.hadamard: 48 layer(s) of Hadamard-folded experts (block 128, explicit signs): hadamard.txt, native_experts.txt v5
+index.txt: 1079 tensors, 303 served natively, 0 in extra.bin, arena 1.38 GiB
+conversions.json: 460 tensors converted to the engine's form (96 exact, 364 rounded; max |err| 0.0144)
+narrowed to F16 by the loader: blk.1.ple_conv1d.weight (f32->f16 by the loader (index kind 3, round-to-nearest-even), index kind 3)
+compat-bf16: 363 tensors, 1.22 GiB; expert and PLE table bytes unchanged
+tokenizer/: vocab 248320, merges 247587, pre qwen35, specials {'tokenizer.ggml.eos_token_id': 248046, 'tokenizer.ggml.padding_token_id': 248044, 'tokenizer.ggml.bos_token_id': 248044}
+  [ok] model prepared: /home/cuong/Strata-data/packs/gyro-gyro-m
+  [ok] MTP draft layer: /home/cuong/Strata-data/mtp/rt
+
+=== Step 7: writing the start script ===
+  [ok] KV streaming on: the context's KV cache lives in RAM (1.8 GB), more experts fit in VRAM
+  tip: this card drives a display. If the PC freezes or the screen goes black once the model is loaded (#779), keep more VRAM free: run setup again with --vram-reserve-mib 1500
+Tune Strata for this PC now? It measures a few engine settings (about 15-30 minutes, longer on a slow card; the PC is busy meanwhile; later: START-HERE --calibrate) [y]:
+
+  Tuning Strata for this PC: the output speed is measured with a few engine settings (the PCIe share, the
+  draft depth, the CPU threads, the expert cache; on two or more cards also the prompt chunks). It takes
+  roughly 15-30 minutes (3 rounds of each value); the PC is busy meanwhile.
+  Loading the model for the measurements ...
+[strata] starting the engine: reading the model's weights ...
+[strata] loading the experts into RAM (about 92 GB) and locking part of them for the GPU.
+         YOUR PC CAN BE SLOW OR STOP RESPONDING FOR 1-3 MINUTES NOW - this is normal.
+         Please wait and don't close this window; the server says when it is ready.
+[strata] still starting (24 s) - please wait ...
+[strata] still starting (44 s) - please wait ...
+[strata] experts loaded: 29.88 GiB at 0.86 GiB/s (49 s so far)
+[strata] filling the GPU's expert cache (12819 experts, 15.59 GiB of VRAM) ...
+[strata] almost ready ...
+    round 1/3 PCIe share: 0 111.1  0.2 106.8  0.3 109.2  0.35 106.8  0.55 108.3  0.75 107.6  0.9 109.8  1 99.2
+    round 2/3 PCIe share: 0 105.8  0.2 107.6  0.3 106.9  0.35 107.9  0.55 108.0  0.75 108.2  0.9 107.4  1 100.2
+    round 3/3 PCIe share: 0 103.7  0.2 103.9  0.3 108.2  0.35 108.1  0.55 110.6  0.75 106.0  0.9 106.6  1 97.9
+    PCIe share, median of 3: 0: 105.8 (103.7-111.1), 0.2: 106.8 (103.9-107.6), 0.3: 108.2 (106.9-109.2), 0.35: 107.9 (106.8-108.1), 0.55: 108.3 (108.0-110.6), 0.75: 107.6 (106.0-108.2), 0.9: 107.4 (106.6-109.8), 1: 99.2 (97.9-100.2) -> best 0.55
+    round 1/3 draft floor: 0.3 102.0  0.5 108.5  0.7 107.1
+    round 2/3 draft floor: 0.3 101.8  0.5 106.4  0.7 107.0
+    round 3/3 draft floor: 0.3 104.2  0.5 108.0  0.7 107.6
+    draft floor, median of 3: 0.3: 102.0 (101.8-104.2), 0.5: 108.0 (106.4-108.5), 0.7: 107.1 (107.0-107.6) -> best 0.5
+  Measuring with 20 CPU workers (restarts the engine) ...
+[strata] starting the engine: reading the model's weights ...
+[strata] loading the experts into RAM (about 92 GB) and locking part of them for the GPU.
+         YOUR PC CAN BE SLOW OR STOP RESPONDING FOR 1-3 MINUTES NOW - this is normal.
+         Please wait and don't close this window; the server says when it is ready.
+[strata] still starting (29 s) - please wait ...
+[strata] still starting (49 s) - please wait ...
+[strata] experts loaded: 29.88 GiB at 0.87 GiB/s (54 s so far)
+[strata] filling the GPU's expert cache (12819 experts, 15.59 GiB of VRAM) ...
+[strata] almost ready ...
+    20 workers: 106.1 tok/s
+  Measuring with 13 CPU workers (restarts the engine) ...
+[strata] starting the engine: reading the model's weights ...
+[strata] loading the experts into RAM (about 92 GB) and locking part of them for the GPU.
+         YOUR PC CAN BE SLOW OR STOP RESPONDING FOR 1-3 MINUTES NOW - this is normal.
+         Please wait and don't close this window; the server says when it is ready.
+[strata] still starting (29 s) - please wait ...
+[strata] still starting (49 s) - please wait ...
+[strata] experts loaded: 29.88 GiB at 0.85 GiB/s (55 s so far)
+[strata] filling the GPU's expert cache (12819 experts, 15.59 GiB of VRAM) ...
+[strata] almost ready ...
+    13 workers: 100.0 tok/s
+  Measuring with 10 CPU workers (restarts the engine) ...
+[strata] starting the engine: reading the model's weights ...
+[strata] loading the experts into RAM (about 92 GB) and locking part of them for the GPU.
+         YOUR PC CAN BE SLOW OR STOP RESPONDING FOR 1-3 MINUTES NOW - this is normal.
+         Please wait and don't close this window; the server says when it is ready.
+[strata] still starting (29 s) - please wait ...
+[strata] still starting (49 s) - please wait ...
+[strata] experts loaded: 29.88 GiB at 0.84 GiB/s (55 s so far)
+[strata] filling the GPU's expert cache (12819 experts, 15.59 GiB of VRAM) ...
+[strata] almost ready ...
+    10 workers: 96.4 tok/s
+  Measuring with 5 CPU workers (restarts the engine) ...
+[strata] starting the engine: reading the model's weights ...
+[strata] loading the experts into RAM (about 92 GB) and locking part of them for the GPU.
+         YOUR PC CAN BE SLOW OR STOP RESPONDING FOR 1-3 MINUTES NOW - this is normal.
+         Please wait and don't close this window; the server says when it is ready.
+[strata] still starting (29 s) - please wait ...
+[strata] still starting (49 s) - please wait ...
+[strata] experts loaded: 29.88 GiB at 0.86 GiB/s (54 s so far)
+[strata] filling the GPU's expert cache (12819 experts, 15.59 GiB of VRAM) ...
+[strata] almost ready ...
+    5 workers: 85.1 tok/s
+  Measuring the expert tier (the engine default) (restarts the engine) ...
+[strata] starting the engine: reading the model's weights ...
+[strata] loading the experts into RAM (about 92 GB) and locking part of them for the GPU.
+         YOUR PC CAN BE SLOW OR STOP RESPONDING FOR 1-3 MINUTES NOW - this is normal.
+         Please wait and don't close this window; the server says when it is ready.
+[strata] still starting (29 s) - please wait ...
+[strata] still starting (49 s) - please wait ...
+[strata] experts loaded: 29.88 GiB at 0.88 GiB/s (53 s so far)
+[strata] filling the GPU's expert cache (12819 experts, 15.59 GiB of VRAM) ...
+[strata] almost ready ...
+    103.5 tok/s
+  Measuring the expert tier every 1, 80 swaps, decay 0.97 (restarts the engine) ...
+[strata] starting the engine: reading the model's weights ...
+[strata] loading the experts into RAM (about 92 GB) and locking part of them for the GPU.
+         YOUR PC CAN BE SLOW OR STOP RESPONDING FOR 1-3 MINUTES NOW - this is normal.
+         Please wait and don't close this window; the server says when it is ready.
+[strata] still starting (30 s) - please wait ...
+[strata] still starting (50 s) - please wait ...
+[strata] experts loaded: 29.88 GiB at 0.86 GiB/s (55 s so far)
+[strata] filling the GPU's expert cache (12819 experts, 15.59 GiB of VRAM) ...
+[strata] almost ready ...
+    104.1 tok/s
+  Measuring the expert tier every 1, 160 swaps, decay 0.97 (restarts the engine) ...
+[strata] starting the engine: reading the model's weights ...
+[strata] loading the experts into RAM (about 92 GB) and locking part of them for the GPU.
+         YOUR PC CAN BE SLOW OR STOP RESPONDING FOR 1-3 MINUTES NOW - this is normal.
+         Please wait and don't close this window; the server says when it is ready.
+[strata] still starting (29 s) - please wait ...
+[strata] still starting (49 s) - please wait ...
+[strata] experts loaded: 29.88 GiB at 0.84 GiB/s (56 s so far)
+[strata] filling the GPU's expert cache (12819 experts, 15.59 GiB of VRAM) ...
+[strata] almost ready ...
+    106.0 tok/s
+  [ok] tuned for this PC: the default settings are already the fastest here (103.5 tok/s)
+  [ok] start script: run-gyro-gyro-m.sh
+
+All set.
+  API (OpenAI):     http://127.0.0.1:8080/v1   (any API key; model name: anything)
+  API (Anthropic):  http://127.0.0.1:8080/v1/messages
+  Next time:        just run ./setup.sh (or run-gyro-gyro-m.sh) - it starts right away
+  Images:           send them in the chat page, in chat.py (/image <path>) or over the API
+  Several requests at once (opt-in): --parallel 4 decodes up to 4 together instead of one after the other (each takes ~0.6 GB of VRAM from the expert cache; docs/BATCHING.md).
+Run a quick benchmark now? It measures this install for about 10 minutes and writes a report you can share (later: ./bench.sh) [n]: y
+Starting strata-gyro-gyro-m.json on port 8080 (loading takes 1-3 minutes; the PC may be slow meanwhile) ...
+  still loading (0 s) ...
+  still loading (30 s) ...
+  still loading (60 s) ...
+Running the suite (about 3-10 minutes) ...
+warming up (not measured) ...
+  calibrated: about 1.08 tokens per word
+chat: 3 short questions x 3 runs, up to 100 new tokens
+  run 1 q1: decode 90.8 tok/s, first token 0.556 s, 100 tokens
+  run 1 q2: decode 76.5 tok/s, first token 0.545 s, 100 tokens
+  run 1 q3: decode 76.2 tok/s, first token 0.549 s, 100 tokens
+  run 2 q1: decode 113.6 tok/s, first token 0.502 s, 100 tokens
+  run 2 q2: decode 95.9 tok/s, first token 0.467 s, 100 tokens
+  run 2 q3: decode 89.2 tok/s, first token 0.476 s, 100 tokens
+  run 3 q1: decode 115.2 tok/s, first token 0.494 s, 100 tokens
+  run 3 q2: decode 90.7 tok/s, first token 0.446 s, 100 tokens
+  run 3 q3: decode 97.7 tok/s, first token 0.467 s, 100 tokens
+4K prompt: 3 fresh prompts of about 4096 tokens, 24 new tokens
+  run 1: 4019 tokens, prompt 1695.7 tok/s (0 reused), first token 2.394 s
+  run 2: 4019 tokens, prompt 1711.5 tok/s (0 reused), first token 2.372 s
+  run 3: 4019 tokens, prompt 1702.4 tok/s (0 reused), first token 2.384 s
+16K prompt: 3 fresh prompts of about 16384 tokens, 24 new tokens
+  run 1: 16058 tokens, prompt 2200.2 tok/s (0 reused), first token 7.339 s
+  run 2: 16058 tokens, prompt 2167.6 tok/s (0 reused), first token 7.448 s
+  run 3: 16058 tokens, prompt 2185.7 tok/s (0 reused), first token 7.388 s
+agent: a session of 6 turns with four tools, x 3 runs
+  run 1 turn 0: prompt 609, reused 0, read 609, first token 1.401 s
+  run 1 turn 1: prompt 3210, reused 629, read 2581, first token 2.338 s
+  run 1 turn 2: prompt 4743, reused 3203, read 1540, first token 2.333 s
+  run 1 turn 3: prompt 7987, reused 4806, read 3181, first token 2.471 s
+  run 1 turn 4: prompt 10015, reused 8051, read 1964, first token 2.228 s
+  run 1 turn 5: prompt 12776, reused 10070, read 2706, first token 2.357 s
+  run 2 turn 0: prompt 609, reused 0, read 609, first token 1.665 s
+  run 2 turn 1: prompt 3213, reused 632, read 2581, first token 2.233 s
+  run 2 turn 2: prompt 4746, reused 3277, read 1469, first token 2.065 s
+  run 2 turn 3: prompt 7990, reused 4810, read 3180, first token 2.359 s
+  run 2 turn 4: prompt 10003, reused 8039, read 1964, first token 2.164 s
+  run 2 turn 5: prompt 12744, reused 10038, read 2706, first token 2.291 s
+  run 3 turn 0: prompt 609, reused 0, read 609, first token 1.583 s
+  run 3 turn 1: prompt 3210, reused 629, read 2581, first token 2.229 s
+  run 3 turn 2: prompt 4743, reused 3273, read 1470, first token 2.065 s
+  run 3 turn 3: prompt 7987, reused 4806, read 3181, first token 2.36 s
+  run 3 turn 4: prompt 10003, reused 8039, read 1964, first token 2.158 s
+  run 3 turn 5: prompt 12765, reused 10059, read 2706, first token 2.293 s
+
+Results (median, range over the runs):
+  chat decode tok/s                     90.80   (76.20 - 115.20, n=9)
+  chat first token (s)                   0.49   (0.45 - 0.56, n=9)
+  4K prompt tok/s                     1702.40   (1695.70 - 1711.50, n=3)
+  4K first token (s)                     2.38   (2.37 - 2.39, n=3)
+  16K prompt tok/s                    2185.70   (2167.60 - 2200.20, n=3)
+  16K first token (s)                    7.39   (7.34 - 7.45, n=3)
+  agent cache hit %                     69.25   (69.09 - 69.25, n=3)
+  agent re-read tokens/session           5.00   (3.00 - 74.00, n=3)
+  agent turn first token (s)             2.29   (2.06 - 2.47, n=15)
+  agent decode tok/s                   108.00   (86.30 - 121.90, n=15)
+
+Report: bench/results/2026-10-26-community-rtx-3090-qwen3-8-flash-next-gyro-gyro-m/README.md
+Share it: open a pull request that adds the folder bench/results/2026-10-26-community-rtx-3090-qwen3-8-flash-next-gyro-gyro-m (see docs/COMMUNITY_BENCHMARKS.md), or paste README.md into a GitHub issue. Home folders, user and host names and IP addresses are already replaced; read it once before you share it.
+For results other people can compare with, run the standard benchmark: strata bench run (docs/BENCHMARK_PROTOCOL.md).
+  [ok] GPU: GPU 0 (NVIDIA GeForce RTX 3090, 24 GB)
+
+  ----------------------------------------------------------------------------------------------------
+  Starting qwen3.8-flash-next-gyro-gyro-m: it loads about 92 GB into RAM and locks part of it for the GPU.
+  While it does, YOUR PC CAN BE SLOW OR STOP RESPONDING FOR 1-3 MINUTES (longer the first time after a
+  restart). That is normal: please wait and don't close this window - the browser opens when it is ready.
+  Later, closing this window stops the model.
+  ----------------------------------------------------------------------------------------------------
+  Settings (strata-gyro-gyro-m.json): --expert-cache auto --prefill auto --spec 4 --max-context 131072
+    --kv int8 --kv-resident 32768 --vision --vram-reserve-mib 700 --spec-min-p 0.5; server
+    127.0.0.1:8080, gpu 0
+loading the vision encoder ...
+loading the model (the first start takes a minute or two) ...
+[strata] starting the engine: reading the model's weights ...
+[strata] loading the experts into RAM (about 92 GB) and locking part of them for the GPU.
+         YOUR PC CAN BE SLOW OR STOP RESPONDING FOR 1-3 MINUTES NOW - this is normal.
+         Please wait and don't close this window; the browser opens when it is ready.
+[strata] still starting (30 s) - please wait ...
+[strata] still starting (50 s) - please wait ...
+[strata] experts loaded: 29.88 GiB at 0.85 GiB/s (55 s so far)
+[strata] filling the GPU's expert cache (11747 experts, 14.28 GiB of VRAM) ...
+[strata] almost ready ...
+ready: http://127.0.0.1:8080/v1  (OpenAI: /v1/chat/completions, Anthropic: /v1/messages, context 131072 tokens, images on)
+       open http://127.0.0.1:8080/ in a browser to chat; close this window to stop the model

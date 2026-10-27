@@ -1,0 +1,45 @@
+
+
+
+0) System: Dell Workstation T5810
+
+Item	Details
+Model	Dell Precision Tower 5810 (T5810), modded
+Chipset / socket	Intel C612, LGA 2011-3
+Officially supported CPUs	Xeon E5-1600/2600 v3 and v4. Dell officially lists up to 18 cores; your 22-core chip works (needs a v4-ready BIOS)
+PSU	Dell 685 W, 80+ Gold
+Network	Intel Gigabit Ethernet (I217), IP 192.168.2.27
+CPU: Intel Xeon E5-2698 v4 (Broadwell-EP, 14 nm, 2016)
+Item	Value
+Cores / threads	20 / 40
+Clock	2.2 GHz base, up to 3.6 GHz turbo
+L3 cache	55 MB
+TDP	145 W
+Memory	4 channels DDR4, max 2400 MT/s, about 76.8 GB/s theoretical
+PCIe	40 lanes PCIe 3.0
+Instructions	AVX2 (no AVX-512)
+Memory
+Item	Value
+Installed	2 × 16 GB = 32 GB, SK hynix HMA82GR7AFR8N-VK
+Type	DDR4 RDIMM (Registered ECC), 2Rx8, rated 2666, running at 2400
+Slots	8 (2 per channel × 4 channels)
+Maximum	256 GB ECC RDIMM
+
+1) GPU: NVIDIA GTX 1070 8 GB
+
+2) RAM: 32 GB (2 x 16 Registered ECC 2Rx8 @ 2400 MHz, runnung at 2400 MHz)
+
+3) PCIE to NVME SSD converter: 
+Brand: NFHK,
+Model: N-M2X1
+Plugged in: PCIe 3.0 x1
+
+4) SSD information:
+Intel 7600p 512GB
+Interface:	PCIe 3.0 x4 NVMe
+NAND:	64-layer TLC (Intel/Micron)
+DRAM cache:	Yes
+Seq. read / write:	~3200 / ~1600 MB/s
+Rated endurance:	288 TBW (consumer 760p spec)
+Controller:	Silicon Motion SM2262	
+

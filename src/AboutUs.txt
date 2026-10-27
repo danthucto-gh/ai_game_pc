@@ -21,8 +21,8 @@ It will be mostly LLM inferencing.
 
 2.2) Intended models used: 
 2.2.1) Late 2026 - mid 2027
-- Qwen 3.8 27B (which will fit entirely inside this 3090) 
-- Qwen 3.8 Flash Next will need about 120GB of RAM.
+- Qwen 3.8 27B: 20+ tok/sec 
+- Qwen 3.8 Flash Next 20+ tok/sec on Strata.
 2.2.2) After 2027
 - Probably Qwen 4.0 
 
